@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+   <form class="bootstrap-form" method="post" action="{{ url_for('edit', checker_id=checker.id) }}">
+     <h4>Email</h4>
+     <input type="text" name="email" class="form-control" value="{{checker.email}}">
+     <h4>Phone</h4>
+      <input type="text" name="phone" class="form-control" value="{{checker.phone}}">
+     <h4>Checker Label</h4>
+     <input type="text" name="checker_name" class="form-control"
+      placeholder="My Checker" value="{{checker.name}}" required autofocus>
+     <h4>Search Term</h4>
+     <input type="text" name="search_term" class="form-control"
+      placeholder="Macbook" value="{{checker.search}}" required>
+     <h4>Category Id</h4>
+     <input type="number" name="category" class="form-control"
+      placeholder="111422" value="{{checker.category_id}}" required>
+     <h4>Price Range</h4>
+     <div class="row">
+        <div class="col-md-6">
+           <input type="number" name="range_start" class="form-control" placeholder="$Lowest" value="{{checker.range_start}}" required>
+        </div>
+        <div class="col-md-6">
+           <input name="range_end" type="number" class="form-control" placeholder="$Highest" value="{{checker.range_end}}" required>
+        </div>
+     </div>
+     <h4>Checker Type</h4>
+     <select name="checker_type" selected="{{checker.checker_type}}">
+        <option value="both" {% if checker.checker_type=="both" %} selected {% endif %}>Both</option>
+        <option value="auction" {% if checker.checker_type=="auction" %} selected {% endif %}>Auction</option>
+        <option value="bin" {% if checker.checker_type=="bin" %} selected {% endif %}>Buy It Now</option>
+     </select>
+          <h4>Condition (Searches for selected or better) </h4>
+     <select name="condition" selected="{{checker.condition}}">
+        <option value="new" {% if checker.condition=="new" %} selected {% endif %}>New</option>
+        <option value="new_other" {% if checker.condition=="new_other" %} selected {% endif %}>New Other</option>
+        <option value="refurbished" {% if checker.condition=="refurbished" %} selected {% endif %}>Refurbished</option>
+        <option value="like_new" {% if checker.condition=="like_new" %} selected {% endif %}>Used - Like New</option>
+        <option value="good" {% if checker.condition=="good" %} selected {% endif %}>Used - Good</option>
+        <option value="acceptable" {% if checker.condition=="acceptable" %} selected {% endif %}>Used - Acceptable</option>
+        <option value="not_working" {% if checker.condition=="not_working" %} selected {% endif %}>For Parts</option>
+     </select>
+     <h4>Notify Me About Auctions X Minutes Before They End</h4>
+     <input type="number" name="auction_notify" class="form-control" placeholder="5" value="{{checker.auction_notify}}" required>
+     <h4>Threshold</h4>
+     <input type="number" name="threshold" class="form-control" value="{{checker.threshold}}" required>
+     <input type="hidden" name="num_keywords" value="0" id="numKeywords">
+     <h4>Keywords (Case and Space Insensitive)</h4>
+     <div id="keywords">
+     </div>
+     <div class="btn"><span id="addNewKeyword" class="btn btn-success">+</span></div>
+     <div class="btn"><span id="removeKeyword" class="btn btn-danger">-</span></div>
+     <button class="btn btn-lg btn-primary btn-block">Submit</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+   var counter = 0;
+
+   $(document).ready(function() {
+       {% for keyword in keywords %}
+    field_to_append = '<div class="row" id="key' + counter + '"><div class="col-md-9"><input type="text" name="keyword' + counter + '" class="form-control" placeholder="Keyword" value="{{keyword.keyword}}" required></div><div class="col-md-3"><input name="value' + counter + '" type="number" class="form-control" placeholder="Value" value="{{keyword.value}}" required></div></div><br>';
+      $("#keywords").append(field_to_append);
+      counter += 1;
+      $("#numKeywords").val(counter);
+    {% endfor %}
+      $("#addNewKeyword").click(function() {
+         field_to_append = '<div class="row" id="key' + counter + '"><div class="col-md-9"><input type="text" name="keyword' + counter + '" class="form-control" placeholder="Keyword" required></div><div class="col-md-3"><input name="value' + counter + '" type="number" class="form-control" placeholder="Value" required></div></div><br>';
+         $("#keywords").append(field_to_append);
+         counter += 1;
+         $("#numKeywords").val(counter);
+      });
+
+      $("#removeKeyword").click(function() {
+        if(counter >= 0)
+        {
+          $("#key" + (counter-1)).remove();
+          counter -= 1;
+          $("#numKeywords").val(counter);
+        }
+      });
+
+   });
+</script>
+{% endblock %}
