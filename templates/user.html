@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="margin: 100px">
+   <div class="row">
+    <div class="col-md-4">
+      <h2>{{ username }}</h2>
+      <h2>Avg Rating: {{ avg_rating }}</h2>
+    </div>
+    <div class="col-md-4">
+      {% for rating in ratings %}
+      <h4><a href="/movie/{{ rating[1]}}">{{ rating[0] }}</a> {{ rating[2] }} stars</h4>
+      {% endfor %}
+    </div>
+      </div>
+</div>
+{% endblock %}
+

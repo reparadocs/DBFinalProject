@@ -1,6 +1,8 @@
 from MyORM import *
 from flask import Flask, render_template, request, redirect, url_for
 from models import *
+import json
+import random
 
 app = Flask(__name__)
 
@@ -39,7 +41,7 @@ def index(user_id):
     if user is None:
         return redirect(url_for('home'))
 
-    return render_template('index.html')
+    return render_template('index.html', user_id = user_id)
 
 @app.route('/', methods=['GET'])
 def home():
@@ -53,15 +55,63 @@ def movie(movie_id):
     if movie is None:
         return redirect(url_for('home'))
 
-    ratings = db.execute('SELECT (U.username, U.rowid, R.rating) \
+    db.execute('SELECT U.username, U.rowid, R.rating \
                             FROM Movie M JOIN Rating R ON R.movie = M.rowid \
                                 JOIN User U ON U.rowid = R.user \
                             WHERE M.rowid = ' + str(movie.rowid) + ';')
+    ratings = db.cursor.fetchall()
 
-    return render_template('movie.html', title=movie.title, img_url=movie.img_url, ratings=list(ratings))
+    db.execute('SELECT AVG(R.rating) \
+                            FROM Movie M JOIN Rating R ON R.movie = M.rowid \
+                                JOIN User U ON U.rowid = R.user \
+                            WHERE M.rowid = ' + str(movie.rowid) + ';')
+    avg = db.cursor.fetchall()[0][0]
+    return render_template('movie.html', title=movie.title, img_url=movie.img_link, ratings=list(ratings), avg_rating=avg)
 
+@app.route('/user/<int:user_id>/', methods=['GET'])
+def user(user_id):
+    db = MyORM('movie')
+    user = db.get(User, user_id)
+    if user is None:
+        return redirect(url_for('home'))
 
+    db.execute('SELECT M.title, M.rowid, R.rating \
+                            FROM Movie M JOIN Rating R ON R.movie = M.rowid \
+                                JOIN User U ON U.rowid = R.user \
+                            WHERE U.rowid = ' + str(user.rowid) + ';')
+    ratings = db.cursor.fetchall()
+    db.execute('SELECT AVG(R.rating) \
+                            FROM Movie M JOIN Rating R ON R.movie = M.rowid \
+                                JOIN User U ON U.rowid = R.user \
+                            WHERE U.rowid = ' + str(user.rowid) + ';')
+    avg = db.cursor.fetchall()[0][0]
+    return render_template('user.html', username=user.username, ratings=list(ratings), avg_rating=avg)
 
+@app.route('/get_movie/<int:user_id>/', methods=['GET'])
+def getMovie(user_id):
+    db = MyORM('movie')
+    user = db.get(User, user_id)
+    if user is None:
+        return redirect(url_for('home'))
+    db.execute('SELECT M.title, M.img_link, M.rowid \
+                FROM Movie M WHERE M.rowid < 5 AND M.rowid NOT IN ( \
+                    SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
+                    JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
+    movies = list(db.cursor.fetchall())
+    if len(movies) < 1:
+        print "No movies left"
+        return json.dumps({'error': 'No Movies Left To Rate'})
+    movie = random.choice(movies)
+    return json.dumps({'title': movie[0], 'img_url': movie[1], 'movie_id': movie[2]})
+
+@app.route('/rate/<int:user_id>/<int:movie_id>/', methods=['POST'])
+def rateMovie(user_id, movie_id):
+    db = MyORM('movie')
+    user = db.get(User, user_id)
+    movie = db.get(Movie, movie_id)
+    rating  = Rating([0, user.rowid, movie.rowid, request.form['rating']])
+    db.insert(rating)
+    return json.dumps({'success': True})
 
 if __name__ == '__main__':
     db = MyORM('movie')

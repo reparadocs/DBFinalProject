@@ -1,46 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Examiners</h2>
-<div class="table-responsive">
-   <table class="table table-striped">
-      <thead>
-         <tr>
-            <th>Label</th>
-            <th>Search Term</th>
-            <th>Range Start</th>
-            <th>Range End</th>
-            <th>Phone</th>
-            <th>Options</th>
-         </tr>
-      </thead>
-      <tbody>
-      {% for checker in checkers %}
-         <tr>
-            <td>{{checker.name}}</td>
-            <td>{{checker.search}}</td>
-            <td>${{checker.range_start}}</td>
-            <td>${{checker.range_end}}</td>
-            <td>{{checker.phone}}</td>
-            <td><a href="{{url_for('download', checker_id=checker.id)}}">Data</a>&nbsp;&nbsp;&nbsp;
-            <a href="{{url_for('edit', checker_id=checker.id)}}">Edit</a>&nbsp;&nbsp;&nbsp;
-            <a href="{{url_for('delete', checker_id=checker.id)}}">Delete</a></td>
-         </tr>
-      {% endfor %}
-      </tbody>
-   </table>
+<div class="container">
+   <h2><a href="/user/{{ user_id }}">My Profile</a></h2>
+   <div id="movie"></div>
+   <script>
+    var myUserId = {{ user_id }};
+   </script>    <script type="text/babel" src="{{ url_for('static', filename='react/star.react.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='react/movie.react.js') }}"></script>
+
 </div>
 
 
 
-<br>
-You are using <b>{{limit}}</b> out of <b>1,500,000</b> API Calls.
-<br>
-<a href="http://www.isoldwhat.com/getcats/">Category ID List</a>
-<br>
-Apple Laptop Category ID is 111422
-<br>
-All checkers run every 10 seconds
-<br>
-Best Practices: Small range, specific search terms, high intervals, small amount of keywords
-<br>
+
 {% endblock %}

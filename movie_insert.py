@@ -14,8 +14,6 @@ if not db.doesTableExist(Movie):
 
 for line in data_file:
   data_list = line.split('|')
-  if int(data_list[0]) < 543:
-    continue
   title = data_list[1]
   title = unicode(title, 'utf-8')
   title = unidecode(title)

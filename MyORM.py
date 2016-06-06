@@ -1,5 +1,6 @@
 import sqlite3
 import inspect
+import global_vars
 
 class MyORM:
   def __init__(self, name):
@@ -13,7 +14,7 @@ class MyORM:
 
   def _valToStr(self, val):
     if type(val) is str or type(val) is unicode:
-      return "\"" + db.sanitize(str(val)) + "\""
+      return "\"" + self.sanitize(str(val)) + "\""
     else:
       return str(val)
 
@@ -132,7 +133,8 @@ class MyORM:
     return item
 
   def getAll(self, model):
-    statement = 'SELECT * FROM ' + model.__name__ + ' ;'
+    order = global_vars.model_order[model.__name__]
+    statement = 'SELECT ' + order + ' FROM ' + model.__name__ + ' ;'
     self.execute(statement)
     res = self.cursor.fetchall()
     models = []
@@ -141,7 +143,8 @@ class MyORM:
     return models
 
   def filter(self, model, condition):
-    statement = 'SELECT * FROM ' + model.__name__ + ' WHERE ' + condition + ';'
+    order = global_vars.model_order[model.__name__]
+    statement = 'SELECT ' + order + ' FROM ' + model.__name__ + ' WHERE ' + condition + ';'
     self.execute(statement)
     res = self.cursor.fetchall()
     models = []
@@ -150,8 +153,8 @@ class MyORM:
     return models
 
   def get(self, model, model_id):
-    condition = 'ROWID = ' + model_id
-    match = db.filter(model, condition)
+    condition = 'ROWID = ' + str(model_id)
+    match = self.filter(model, condition)
     model = None
     if len(match) > 0:
         model = match[0]

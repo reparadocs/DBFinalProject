@@ -49,3 +49,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.my-rating-element {
+  font-size: 400%;
+}

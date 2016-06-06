@@ -17,6 +17,8 @@ class Movie(Model):
 
     if len(l) >= 3 and l[2] is not None:
       self.img_link = l[2]
+    else:
+      self.img_link = None
 
 class Rating(Model):
   user = ForeignKeyField(User)
