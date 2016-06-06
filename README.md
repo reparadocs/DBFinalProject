@@ -4,9 +4,7 @@ virtualenv .env-fp
 
 source .env-fp/bin/activate
 
-pip install flask
-pip install beautifulsoup4
-pip install requests
+pip install -r requirements.txt
 
 python movie.py
 
