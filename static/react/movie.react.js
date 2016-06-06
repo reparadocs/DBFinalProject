@@ -8,7 +8,7 @@ var MovieCell = React.createClass({
   },
   _getNewMovie: function() {
     $.ajax({
-      url: '/get_movie/' + this.props.user_id,
+      url: '/get_movie/' + this.props.user_id + '/' + this.props.rid + '/',
       dataType: 'json',
       success: function(data) {
         this.setState(data);
@@ -157,58 +157,58 @@ var Movie = React.createClass({
       <MovieRecs fetch={()=>this.setState({fetch: true})} fetchNew={this.state.fetch} unfetch={()=>{this.setState({fetch: false})}} user_id={this.props.user_id} />
             <div className="row">
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={16} sfetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={15} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={14} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={13} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       </div>
                   <div className="row">
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={12} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={11} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={10} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={9} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       </div>
                   <div className="row">
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={8} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={7} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={6} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={5} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       </div>
                   <div className="row">
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={4} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={3} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={2} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
             <div className="col-md-3">
-      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      <MovieCell rid={1} fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       </div>
 

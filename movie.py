@@ -96,8 +96,8 @@ def user(user_id):
     avg = db.cursor.fetchall()[0][0]
     return render_template('user.html', username=user.username, ratings=list(ratings), avg_rating=avg)
 
-@app.route('/get_movie/<int:user_id>/', methods=['GET'])
-def getMovie(user_id):
+@app.route('/get_movie/<int:user_id>/<int:rid>/', methods=['GET'])
+def getMovie(user_id, rid):
     db = MyORM('movie')
     user = db.get(User, user_id)
     if user is None:
@@ -110,7 +110,7 @@ def getMovie(user_id):
     if len(movies) < 1:
         print "No movies left"
         return json.dumps({'error': 'No Movies Left To Rate'})
-    random.seed(os.urandom(16))
+    random.seed(rid)
     movie = random.choice(movies)
     return json.dumps({'title': movie[0], 'img_url': movie[1], 'movie_id': movie[2]})
 
