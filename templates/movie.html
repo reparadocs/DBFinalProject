@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+   <div class="row">
+    <div class="col-lg-4">
+      <h2>{{ title }}</h2>
+      {% if img_url %}
+      <img src="{{ img_url }}">
+      {% else %}
+      <h2>No image found </h2>
+      {% endif %}
+    </div>
+    <div class="col-lg-4">
+      {% for rating in ratings %}
+      <h4>{{ rating[0] }} {{ rating[2] }}</h4>
+      {% endfor %}
+    </div>
+      </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container my-container" style="height: 500px;">
+  <br>
+    <div class="my-center-element">
+      <p><a class="btn btn-success btn-lg" style="width: 100px;" href="{{ url_for('login') }}" role="button">Login</a></p>
+      <p><a class="btn btn-primary btn-lg" style="width: 100px;" href="{{ url_for('register') }}" role="button">Register</a></p>
+    </div>
+    </div>
+{% endblock %}
