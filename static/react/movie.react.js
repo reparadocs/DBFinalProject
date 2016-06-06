@@ -169,6 +169,48 @@ var Movie = React.createClass({
       <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
       </div>
       </div>
+                  <div className="row">
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      </div>
+                  <div className="row">
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      </div>
+                  <div className="row">
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+            <div className="col-md-3">
+      <MovieCell fetch={()=>this.setState({fetch: true})} user_id={this.props.user_id}/>
+      </div>
+      </div>
 
       </div>
     );

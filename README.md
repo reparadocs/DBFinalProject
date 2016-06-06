@@ -1,3 +1,5 @@
+Checkout the demo: https://hidden-cliffs-64331.herokuapp.com/
+
 To run:
 
 virtualenv .env-fp
