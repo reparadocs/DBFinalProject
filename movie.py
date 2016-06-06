@@ -1,8 +1,9 @@
 from MyORM import *
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, make_response
 from models import *
 import json
 import random
+import os
 
 app = Flask(__name__)
 
@@ -35,13 +36,21 @@ def login():
 
 @app.route('/index/<int:user_id>/', methods=['GET'])
 def index(user_id):
+    if user_id == 0:
+        user_id = request.cookies.get('user_id')
+        if user_id is None:
+            user_id = 0
+        else:
+            user_id = str(user_id)
+            return redirect(url_for('index', user_id=user_id))
     db = MyORM('movie')
     user = db.get(User, user_id)
 
     if user is None:
         return redirect(url_for('home'))
-
-    return render_template('index.html', user_id = user_id)
+    resp = make_response(render_template('index.html', user_id = user_id))
+    resp.set_cookie('user_id', str(user_id))
+    return resp
 
 @app.route('/', methods=['GET'])
 def home():
@@ -101,6 +110,7 @@ def getMovie(user_id):
     if len(movies) < 1:
         print "No movies left"
         return json.dumps({'error': 'No Movies Left To Rate'})
+    random.seed(os.urandom(16))
     movie = random.choice(movies)
     return json.dumps({'title': movie[0], 'img_url': movie[1], 'movie_id': movie[2]})
 
