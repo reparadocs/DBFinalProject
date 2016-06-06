@@ -94,7 +94,7 @@ def getMovie(user_id):
     if user is None:
         return redirect(url_for('home'))
     db.execute('SELECT M.title, M.img_link, M.rowid \
-                FROM Movie M WHERE M.rowid < 5 AND M.rowid NOT IN ( \
+                FROM Movie M WHERE M.rowid NOT IN ( \
                     SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
                     JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
     movies = list(db.cursor.fetchall())
@@ -109,9 +109,36 @@ def rateMovie(user_id, movie_id):
     db = MyORM('movie')
     user = db.get(User, user_id)
     movie = db.get(Movie, movie_id)
+    if user is None or movie is None:
+        return redirect(url_for('home'))
     rating  = Rating([0, user.rowid, movie.rowid, request.form['rating']])
     db.insert(rating)
     return json.dumps({'success': True})
+
+@app.route('/get_recommendations/<int:user_id>/', methods=['GET'])
+def recommendMovies(user_id):
+
+    db = MyORM('movie')
+    user = db.get(User, user_id)
+    if user is None:
+        return redirect(url_for('home'))
+    db.execute('SELECT M.title, M.img_link, M.rowid \
+                FROM Movie M WHERE M.rowid NOT IN ( \
+                    SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
+                    JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
+    movies = list(db.cursor.fetchall())
+    if len(movies) < 4:
+        print "No movies left"
+        return json.dumps({'error': 'No Movies Left To Rate'})
+    rec_movies = []
+    rec_movies.append(random.choice(movies))
+    rec_movies.append(random.choice(movies))
+    rec_movies.append(random.choice(movies))
+    rec_movies.append(random.choice(movies))
+    movie_data = []
+    for movie in rec_movies:
+        movie_data.append({"title": movie[0], "img_url": movie[1], "movie_id": movie[2]})
+    return json.dumps(movie_data)
 
 if __name__ == '__main__':
     db = MyORM('movie')
