@@ -4,6 +4,7 @@ from models import *
 import json
 import random
 import os
+import recommender
 
 app = Flask(__name__)
 
@@ -128,23 +129,63 @@ def rateMovie(user_id, movie_id):
 @app.route('/get_recommendations/<int:user_id>/', methods=['GET'])
 def recommendMovies(user_id):
 
+
     db = MyORM('movie')
     user = db.get(User, user_id)
     if user is None:
         return redirect(url_for('home'))
-    db.execute('SELECT M.title, M.img_link, M.rowid \
-                FROM Movie M WHERE M.rowid NOT IN ( \
+    # original!
+    # db.execute('SELECT M.title, M.img_link, M.rowid \
+    #             FROM Movie M \
+    #             WHERE M.rowid NOT IN ( \
+    #                 SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
+    #                 JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
+
+    db.execute('SELECT M.title, M.img_link, M.rowid\
+                FROM Movie M')
+    movie_lookup = list(db.cursor.fetchall())
+    all_movies = [int(i[2]) for i in movie_lookup]
+    random.shuffle(all_movies)
+
+    db.execute('SELECT User.username \
+                FROM User')
+
+    all_users = list([i[0] for i in db.cursor.fetchall()])
+
+    db.execute('SELECT M.title, M.img_link, M.rowid, R.rating, U.username \
+                FROM Movie M \
+                JOIN Rating R ON R.movie = M.rowid \
+                JOIN User U ON U.rowid = R.user \
+                WHERE M.rowid NOT IN ( \
                     SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
                     JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
-    movies = list(db.cursor.fetchall())
-    if len(movies) < 4:
+
+    ratings = list(db.cursor.fetchall())
+
+    # construct ratingsTable
+    ratings_table = {}  # (user, movie) -> rating
+    for rating in ratings:
+        movie_id = int(rating[2])
+        rtng = int(rating[3])
+        user_id = rating[4]
+        ratings_table[user_id, movie_id] = rtng
+
+    if len(ratings) < 4:
         print "No movies left"
         return json.dumps({'error': 'No Movies Left To Rate'})
+
+    recommended = recommender.recommendMovies(ratings_table, user, all_users, all_movies, N=4)
     rec_movies = []
-    rec_movies.append(random.choice(movies))
-    rec_movies.append(random.choice(movies))
-    rec_movies.append(random.choice(movies))
-    rec_movies.append(random.choice(movies))
+    for r in recommended:
+        for m in movie_lookup:
+            if int(m[2]) == r:
+                rec_movies.append(m)
+
+    # print(rec_movies)
+    # rec_movies.append(random.choice(movies))
+    # rec_movies.append(random.choice(movies))
+    # rec_movies.append(random.choice(movies))
+    # rec_movies.append(random.choice(movies))
     movie_data = []
     for movie in rec_movies:
         movie_data.append({"title": movie[0], "img_url": movie[1], "movie_id": movie[2]})
