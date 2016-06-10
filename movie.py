@@ -129,17 +129,10 @@ def rateMovie(user_id, movie_id):
 @app.route('/get_recommendations/<int:user_id>/', methods=['GET'])
 def recommendMovies(user_id):
 
-
     db = MyORM('movie')
     user = db.get(User, user_id)
     if user is None:
         return redirect(url_for('home'))
-    # original!
-    # db.execute('SELECT M.title, M.img_link, M.rowid \
-    #             FROM Movie M \
-    #             WHERE M.rowid NOT IN ( \
-    #                 SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
-    #                 JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
 
     db.execute('SELECT M.title, M.img_link, M.rowid\
                 FROM Movie M')
@@ -155,10 +148,7 @@ def recommendMovies(user_id):
     db.execute('SELECT M.title, M.img_link, M.rowid, R.rating, U.username \
                 FROM Movie M \
                 JOIN Rating R ON R.movie = M.rowid \
-                JOIN User U ON U.rowid = R.user \
-                WHERE M.rowid NOT IN ( \
-                    SELECT N.rowid FROM Movie N JOIN Rating R ON R.movie = N.rowid \
-                    JOIN User U ON U.rowid = R.user WHERE U.rowid = ' + str(user.rowid) + ');')
+                JOIN User U ON U.rowid = R.user')
 
     ratings = list(db.cursor.fetchall())
 
@@ -174,18 +164,13 @@ def recommendMovies(user_id):
         print "No movies left"
         return json.dumps({'error': 'No Movies Left To Rate'})
 
-    recommended = recommender.recommendMovies(ratings_table, user, all_users, all_movies, N=4)
+    recommended = recommender.recommendMovies(ratings_table, user.username, all_users, all_movies, N=4)
     rec_movies = []
     for r in recommended:
         for m in movie_lookup:
             if int(m[2]) == r:
                 rec_movies.append(m)
 
-    # print(rec_movies)
-    # rec_movies.append(random.choice(movies))
-    # rec_movies.append(random.choice(movies))
-    # rec_movies.append(random.choice(movies))
-    # rec_movies.append(random.choice(movies))
     movie_data = []
     for movie in rec_movies:
         movie_data.append({"title": movie[0], "img_url": movie[1], "movie_id": movie[2]})
